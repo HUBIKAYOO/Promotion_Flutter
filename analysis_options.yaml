@@ -1,0 +1,63 @@
+# This file configures the analyzer, which statically analyzes Dart code to
+# check for errors, warnings, and lints.
+#
+# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
+# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
+# invoked from the command line by running `flutter analyze`.
+
+# The following line activates a set of recommended lints for Flutter apps,
+# packages, and plugins designed to encourage good coding practices.
+include: package:flutter_lints/flutter.yaml
+
+# linter:
+#   # The lint rules applied to this project can be customized in the
+#   # section below to disable rules from the `package:flutter_lints/flutter.yaml`
+#   # included above or to enable additional rules. A list of all available lints
+#   # and their documentation is published at https://dart.dev/lints.
+#   #
+#   # Instead of disabling a lint rule for the entire project in the
+#   # section below, it can also be suppressed for a single line of code
+#   # or a specific dart file by using the `// ignore: name_of_lint` and
+#   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
+#   # producing the lint.
+#   rules:
+#     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
+#     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+
+# # Additional information about this file can be found at
+# # https://dart.dev/guides/language/analysis-options
+
+
+analyzer:
+  errors:
+    # ปิดการแจ้งเตือนที่คุณไม่ต้องการ
+    avoid_print: ignore
+    avoid_web_libraries_in_flutter: ignore
+    camel_case_types: ignore
+    constant_identifier_names: ignore
+    empty_constructor_bodies: ignore
+    empty_statements: ignore
+    hash_and_equals: ignore
+    iterable_contains_unrelated_type: ignore
+    list_remove_unrelated_type: ignore
+    missing_return: ignore
+    test_types_in_equals: ignore
+    type_annotate_public_apis: ignore
+    unnecessary_cast: ignore
+    unnecessary_const: ignore
+    unnecessary_new: ignore
+
+linter:
+  rules:
+    # สามารถปิด lint rules ได้ที่นี่
+    avoid_print: false
+    camel_case_types: false
+    constant_identifier_names: false
+    empty_constructor_bodies: false
+    empty_statements: false
+    hash_and_equals: false
+    iterable_contains_unrelated_type: false
+    list_remove_unrelated_type: false
+    test_types_in_equals: false
+    unnecessary_const: false
+    unnecessary_new: false
