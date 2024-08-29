@@ -32,6 +32,10 @@ dependencies:
   carousel_slider: ^4.2.1
   google_maps_flutter: ^2.9.0
   url_launcher: ^6.3.0
+  google_sign_in: ^6.2.1
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.16.0
+  cloud_firestore: ^4.14.0
 
   
 flutter_icons:
@@ -51,6 +55,7 @@ flutter:
   assets:
     - images/login/
     - images/client/
+    - images/client/Advert/
     - images/admin/
     - images/
   fonts:

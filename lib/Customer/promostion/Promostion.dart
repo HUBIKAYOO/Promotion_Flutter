@@ -37,7 +37,7 @@ class _PromostionState extends State<Promostion> {
         padding: EdgeInsets.zero,
         children: [
           Container(
-            color: Colors.amber,
+            color: Color(0xFFEEEEEE),
             child: Column(
               children: [
                 Promostion_Image(data: _data),

@@ -6,8 +6,8 @@ import 'package:upro/Customer/OrderList/orderlist_bottombar.dart';
 
 class OrderList extends StatefulWidget {
     final Map<String, dynamic> data;
-
-  OrderList({required this.data });
+     Set<int>? selectedIds;
+  OrderList({required this.data ,this.selectedIds});
 
   @override
   _OrderListState createState() => _OrderListState();
@@ -16,6 +16,7 @@ class OrderList extends StatefulWidget {
 class _OrderListState extends State<OrderList> {
   @override
   Widget build(BuildContext context) {
+    print('object${widget.selectedIds.toString()}');
     return Scaffold(
       appBar: AppBar(
         title: Text("ทำรายการ"),

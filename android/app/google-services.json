@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1014727780502",
+    "project_id": "uprologin-35e94",
+    "storage_bucket": "uprologin-35e94.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014727780502:android:fd0fd959d9701b1b387ab7",
+        "android_client_info": {
+          "package_name": "com.example.upro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1014727780502-okgpr78fq6c3sssrdmr9ap6n4drbol5v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.upro",
+            "certificate_hash": "414766f99399ef1a4b2de22c6280157a6f0436b4"
+          }
+        },
+        {
+          "client_id": "1014727780502-03iacluv1disk15bbm9f70nh4r4tbl8g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjnJLxUZBheFrBSG7t2qyJtP87Q6mb9p4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1014727780502-03iacluv1disk15bbm9f70nh4r4tbl8g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

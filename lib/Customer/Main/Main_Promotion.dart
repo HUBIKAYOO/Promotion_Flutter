@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:upro/Customer/promostion/promostion.dart';
-import 'package:upro/ip.dart';
+import 'package:upro/IP.dart';
 
 class Main_Promostion extends StatefulWidget {
   const Main_Promostion({super.key});
@@ -19,7 +19,7 @@ class _Main_PromostionState extends State<Main_Promostion> {
   Future<void> _fetchAttractions() async {
     try {
       final response =
-          await http.get(Uri.parse('http://$ip/setpromotionslist'));
+          await http.get(Uri.parse('http://$IP/setpromotionslist'));
 
       if (response.statusCode == 200) {
         setState(() {
@@ -45,8 +45,11 @@ class _Main_PromostionState extends State<Main_Promostion> {
     final itemWidth = (MediaQuery.of(context).size.width - 40) /
         2; // กำหนดความกว้างของแต่ละรายการ
     return Container(
-      color: Colors.blue,
-      child: Wrap(
+      padding: EdgeInsets.only(top: 10),
+      width: double.infinity,
+      color: Colors.transparent,
+      child: Center(
+        child: Wrap(
         spacing: 10, // ระยะห่างระหว่างรายการ
         runSpacing: 10, // ระยะห่างระหว่างบรรทัด
         children: _attractions.map((item) {
@@ -74,7 +77,7 @@ class _Main_PromostionState extends State<Main_Promostion> {
               width: itemWidth,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.blueGrey,
+                color: Colors.white,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +88,7 @@ class _Main_PromostionState extends State<Main_Promostion> {
                       topRight: Radius.circular(10),
                     ),
                     child: Image.network(
-                      'http://$ip/productimages/$url',
+                      'http://$IP/productimages/$url',
                       width: itemWidth,
                       height: itemWidth,
                       fit: BoxFit.cover,
@@ -101,7 +104,7 @@ class _Main_PromostionState extends State<Main_Promostion> {
                         children: [
                           Text(
                             item['name'],
-                            style: TextStyle(color: Colors.white),
+                            
                           ),
                           Text(
                             '฿${item['cost_price']}',
@@ -114,6 +117,7 @@ class _Main_PromostionState extends State<Main_Promostion> {
             ),
           );
         }).toList(),
+      ),
       ),
     );
   }

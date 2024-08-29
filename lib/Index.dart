@@ -1,7 +1,26 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:upro/Customer/MyMenu.dart';
-void main() {
-  runApp(const MyApp());
+import 'package:upro/SignIn/Login/Login.dart';
+import 'package:upro/SignIn/Login/UserID.dart';
+import 'package:upro/SignIn/Permissions.dart';
+import 'package:upro/SignIn/personal/personal.dart';
+import 'package:upro/store/test1.dart'; 
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserIdProvider()),
+        ChangeNotifierProvider(create: (_) => AnotherProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -28,7 +47,13 @@ class MyApp extends StatelessWidget {
           bodyMedium: TextStyle(color: Colors.white, fontFamily: 'Sarabun'),
         ),
       ),
-      home: MyMenu(), // ใช้งาน ProductList อย่างถูกต้อง
+      home: Permissions(), // หน้าหลักเริ่มต้นของแอป
+      routes: {
+        '/login': (context) => Login(),
+        '/permissions': (context) => Permissions(),
+        '/personal': (context) => Personal(),
+        '/menu': (context) => MyMenu(),
+      },
     );
   }
 }

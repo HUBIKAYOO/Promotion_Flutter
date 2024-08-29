@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:upro/ip.dart';
+import 'package:upro/IP.dart';
 
 class Main_Producttype extends StatefulWidget {
   const Main_Producttype({super.key});
@@ -24,7 +24,7 @@ class _Main_ProducttypeState extends State<Main_Producttype> {
   Future<void> _fetchProductTypes() async {
     try {
       final response =
-          await http.get(Uri.parse('http://$ip/producttypes'));
+          await http.get(Uri.parse('http://$IP/producttypes'));
 
       if (response.statusCode == 200) {
         setState(() {
@@ -43,29 +43,29 @@ class _Main_ProducttypeState extends State<Main_Producttype> {
     
     return Container(
       padding: EdgeInsets.only(  bottom: 10, left: 10),
-      color: Colors.green,
+      color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "หมวดหมู่",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,color: Colors.orange),
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: _productTypes.map((productType) {
                 return Container(
-                  decoration: BoxDecoration(color: Colors.amber,borderRadius: BorderRadius.circular(8)),
+                  decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.circular(8)),
                   padding: EdgeInsets.only(left: 10, top: 10, right: 10),
-                  margin: EdgeInsets.only(right: 10,top: 10),
+                  margin: EdgeInsets.only(right: 10),
                   child: InkWell(
                     child: Column(
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(8.0),
                           child: Image.network(
-                            "http://$ip/producttypeimages/${productType['product_type_image']}",
+                            "http://$IP/producttypeimages/${productType['product_type_image']}",
                             width: 50,
                             height: 50,
                             fit: BoxFit.cover,

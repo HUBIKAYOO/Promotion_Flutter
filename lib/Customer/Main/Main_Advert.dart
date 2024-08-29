@@ -16,7 +16,7 @@ class _Main_AdvertState extends State<Main_Advert> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.red,
+      color: Colors.white,
       child: Stack(
         children: [
           CarouselSlider(
@@ -34,7 +34,7 @@ class _Main_AdvertState extends State<Main_Advert> {
                 });
               },
             ),
-            items: List.generate(5, (index) {
+            items: List.generate(6, (index) {
               return Padding(
                 padding: const EdgeInsets.all(10),
                 child: GestureDetector(
@@ -42,7 +42,7 @@ class _Main_AdvertState extends State<Main_Advert> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15.0),
                     child: Image.asset(
-                      "images/client/cafe.jpeg",
+                      "images/client/Advert/$index.jpg",
                       fit: BoxFit.cover, width: double.infinity,
                     ),
                   ),
@@ -57,7 +57,7 @@ class _Main_AdvertState extends State<Main_Advert> {
             child: Center(
               child: AnimatedSmoothIndicator(
                 activeIndex: _currentPage,
-                count: 5,
+                count: 6,
                 effect: WormEffect(
                   activeDotColor: Colors.white,
                   dotColor: Colors.white.withOpacity(0.5),

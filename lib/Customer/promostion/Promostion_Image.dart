@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:upro/ip.dart';
+import 'package:upro/IP.dart';
 
 class Promostion_Image extends StatefulWidget {
   final dynamic data;
@@ -35,7 +35,7 @@ class _Promostion_ImageState extends State<Promostion_Image> {
 
     return Container(
       padding: EdgeInsets.only(bottom: 10),
-      color: Colors.cyan,
+      color: Colors.transparent,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -59,7 +59,7 @@ class _Promostion_ImageState extends State<Promostion_Image> {
                 ),
                 items: images.map((image) {
                   return Image.network(
-                    'http://$ip/productimages/$image',
+                    'http://$IP/productimages/$image',
                     width: double.infinity,
                     fit: BoxFit.fitWidth,
                   );

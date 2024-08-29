@@ -35,7 +35,7 @@ class Orderlist_Address extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(data["name"]),
+                      Text(data["storeName"]),
                       Text('0987311145'),
                       Text('${data["name"]} ต.ปากู จ.ปัตตานี 95000')
                     ],

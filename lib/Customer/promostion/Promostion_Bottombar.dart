@@ -17,7 +17,6 @@ class _Promostion_BottombarState extends State<Promostion_Bottombar> {
     _data = widget.data;
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,9 +28,8 @@ class _Promostion_BottombarState extends State<Promostion_Bottombar> {
             child: GestureDetector(
               onTap: () {},
               child: Container(
-                color: Colors.red,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center ,
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(50),
@@ -42,11 +40,19 @@ class _Promostion_BottombarState extends State<Promostion_Bottombar> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    Text("ร้าน")
+                    SizedBox(height: 3,),
+                    Text(
+                      "ร้าน",
+                      style: TextStyle(fontSize: 10, color: Color(0xFF535353)),
+                    )
                   ],
                 ),
               ),
             ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(bottom: 10, top: 10),
+            child: VerticalDivider(color: Colors.grey),
           ),
           Expanded(
             flex: 1,
@@ -56,8 +62,15 @@ class _Promostion_BottombarState extends State<Promostion_Bottombar> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.add_home_work_sharp),
-                    Text("เก็บในตะกร้า")
+                    Icon(
+                      Icons.add_shopping_cart_outlined,
+                      color: Colors.orange,size: 30,
+                    ),
+                    
+                    Text(
+                      "เก็บในตะกร้า",
+                      style: TextStyle(fontSize: 10, color: Color(0xFF535353)),
+                    )
                   ],
                 ),
               ),
@@ -76,10 +89,13 @@ class _Promostion_BottombarState extends State<Promostion_Bottombar> {
                 );
               },
               child: Container(
+                height: double.infinity,
                 color: Colors.orange,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Icon(Icons.add_home_work_sharp), Text("ซื้อ")],
+                child: Center(
+                  child: Text(
+                    'ซื้อเลย',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
               ),
             ),

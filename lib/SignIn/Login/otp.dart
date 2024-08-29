@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:upro/Login/personal.dart';
+import 'package:upro/SignIn/personal/personal.dart';
 
 class otp extends StatefulWidget {
   const otp({super.key});
@@ -103,12 +103,12 @@ class _OtpState extends State<otp> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Personal(),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => Personal(),
+                    //   ),
+                    // );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,

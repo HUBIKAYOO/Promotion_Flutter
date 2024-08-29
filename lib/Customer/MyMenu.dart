@@ -1,21 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:upro/Customer/Main/Mian.dart';
+import 'package:upro/Customer/PurchaseOrder/PurchaseOrder.dart';
 import 'package:upro/Customer/profile/profile.dart';
 
 class MyMenu extends StatefulWidget {
+  final String? user_id;
+  final int? menu;
+
+  MyMenu({this.user_id, this.menu});
+
   @override
-  State<MyMenu> createState() => _MyMenuState();
+  _MyMenuState createState() => _MyMenuState();
 }
 
 class _MyMenuState extends State<MyMenu> {
-  int _currentIndex = 0;
+  late int _currentIndex;
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // ถ้า widget.menu มีค่า ให้ _currentIndex เป็นค่าใน widget.menu
+    _currentIndex = widget.menu ?? 0;
+
+    // กำหนด PageController พร้อมตำแหน่งเริ่มต้นเป็น _currentIndex
+    _pageController = PageController(initialPage: _currentIndex);
+  }
 
   final List<Widget> _widgetOptions = [
     Main(),
+    PurchaseOrder(),
     Profile(),
   ];
-
-  final PageController _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,18 +49,23 @@ class _MyMenuState extends State<MyMenu> {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
-            label: "Main",
+            label: "หน้าหลัก",
             icon: Icon(Icons.home),
           ),
           BottomNavigationBarItem(
-            label: "Profile",
-            icon: Icon(Icons.portable_wifi_off_outlined),
+            label: "ใบสั่งซื้อ",
+            icon: Icon(Icons.subtitles),
+          ),
+          BottomNavigationBarItem(
+            label: "โปรไฟล์",
+            icon: Icon(Icons.person),
           ),
         ],
         currentIndex: _currentIndex,
-        selectedFontSize: 14.0, // ขนาดของข้อความเมื่อเลือก
-        unselectedFontSize: 14.0, // ขนาดของข้อความเมื่อไม่ได้เลือก
-        selectedIconTheme: IconThemeData(size: 24.0), // ขนาดของไอคอนเมื่อเลือก
+        selectedFontSize: 14.0,
+        unselectedFontSize: 14.0,
+        selectedIconTheme: IconThemeData(size: 24.0),
+        selectedItemColor: Colors.orange,
         onTap: (int newIndex) {
           setState(() {
             _currentIndex = newIndex;
