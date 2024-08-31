@@ -1,63 +1,13 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:upro/Customer/OrderList/oderStatus1.dart';
 import 'package:upro/IP.dart';
-import 'package:upro/SignIn/Login/UserID.dart';
 
-
-class Orderlist_Oder extends StatefulWidget {
+class Orderlist_Oder extends StatelessWidget {
   final Map<String, dynamic> data;
-  Orderlist_Oder({required this.data});
+  final List<dynamic>? oderStatus1 ;
+  Orderlist_Oder({required this.data ,required this.oderStatus1});
 
-  @override
-  _Orderlist_OderState createState() => _Orderlist_OderState();
-}
-
-class _Orderlist_OderState extends State<Orderlist_Oder> {
-  late Map<String, dynamic> _data = widget.data;
-  List<dynamic> _oderStatus1 = [];
-
-  late OderStatus1 _oderStatus1Manager;
-
-  @override
-  void initState() {
-    super.initState();
-    _oderStatus1Manager = OderStatus1();
-    _fetchAttractions();
-  }
-
-  Future<void> _fetchAttractions() async {
-    try {
-      final userId = Provider.of<UserIdProvider>(context, listen: false).userId;
-
-      final response = await http.get(Uri.parse(
-          'http://$IP/puchaseoder/store/${_data['storeId']}/status/1/user/$userId'));
-      print('Response: $response');
-
-      if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(response.body);
-        Map<String, dynamic> firstItem = data[0];
-        String purchaseorderId = firstItem['puchaseoder_id'].toString();
-        print('Purchase Order ID: $purchaseorderId');
-
-        final responses = await http
-            .get(Uri.parse('http://$IP/orders/puchaseorder/$purchaseorderId'));
-
-        if (responses.statusCode == 200) {
-          setState(() {
-            _oderStatus1 = json.decode(responses.body);
-            _oderStatus1Manager.setOderStatus1(_oderStatus1); // อัพเดต OderStatus1
-          });
-        }
-      } else {
-        throw Exception('Failed to load data');
-      }
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
-  }
+  late Map<String, dynamic> _data = data;
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +57,7 @@ class _Orderlist_OderState extends State<Orderlist_Oder> {
               ],
             ),
           ),
-          if (_oderStatus1.isNotEmpty) // เช็คว่ามีข้อมูลใน _oderStatus1 หรือไม่
+          if (oderStatus1 !=null) // เช็คว่ามีข้อมูลใน _oderStatus1 หรือไม่
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -115,7 +65,7 @@ class _Orderlist_OderState extends State<Orderlist_Oder> {
                   height: 10,
                 ),
                 Text("รายการที่รอชำระ"), // แสดงข้อความ "lll"
-                ..._oderStatus1.map((order) {
+                ...oderStatus1!.map((order) {
                   // แปลงข้อมูล 'images' ภายใน map
                   List<dynamic> imagesoder = [];
                   try {

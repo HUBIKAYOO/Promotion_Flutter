@@ -72,7 +72,7 @@ print('aaaaaaaaaaaa${_selectedIds.toString()}');
                 Column(
                   children: [
                     Text(
-                      "฿${widget.data['cost_price']}",
+                      "฿${widget.data['price']}",
                       style: TextStyle(color: Colors.red, fontSize: 25),
                     ),
                     Text(

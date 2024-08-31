@@ -88,7 +88,7 @@ class _Promostion_ImageState extends State<Promostion_Image> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                '฿${_data['cost_price']}',
+                '฿${_data['price']}',
                 style: TextStyle(fontSize: 30, color: Colors.orange),
               ),
               SizedBox(width: 20),
