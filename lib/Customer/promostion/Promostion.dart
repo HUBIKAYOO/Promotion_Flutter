@@ -28,28 +28,24 @@ class _PromostionState extends State<Promostion> {
   Widget build(BuildContext context) {
     print(_data);
     return Scaffold(
-      extendBodyBehindAppBar:true,
+      backgroundColor: Color(0xFFEEEEEE),
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor:Colors.transparent,
+        backgroundColor: Colors.transparent,
       ),
       bottomNavigationBar: Promostion_Bottombar(data: _data),
       body: ListView(
         padding: EdgeInsets.zero,
         children: [
           Container(
-            color: Color(0xFFEEEEEE),
+            margin: EdgeInsets.only(top: 10, bottom: 10),
             child: Column(
               children: [
                 Promostion_Image(data: _data),
-                Container(
-                  color: Colors.black,
-                  height: 10,
-                ),
-                Promostion_Map(),
-                Container(
-                  color: Colors.black,
-                  height: 10,
-                ),
+                SizedBox(height: 10),
+                _Location(_data),
+                SizedBox(height: 10),
+                _Details(),
                 Main_Promostion(),
               ],
             ),
@@ -59,3 +55,50 @@ class _PromostionState extends State<Promostion> {
     );
   }
 }
+
+_Location(_data) => Container(
+      color: Colors.white,
+      padding: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Icon(Icons.location_on,color: Colors.orange,),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              "ที่อยู่ร้านค้า",
+              style: TextStyle(fontSize: 15),
+            ),
+          ]),
+          Padding(
+              padding: EdgeInsets.only(left: 30, top: 10, right: 30, bottom: 5),
+              child: Promostion_Map()),
+          Padding(
+              padding: EdgeInsets.only(left: 40),
+              child: Text('${_data['storeName']} ต.ปากู จ.ปัตตานี 95000')),
+        ],
+      ),
+    );
+
+_Details() => Container(
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+              padding: EdgeInsets.only(left: 10, top: 5),
+              child: Text("คุณลักษณะ")),
+          Divider(color: Colors.grey),
+          Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: Text("a;evksmrtokbmt")),
+          Divider(color: Colors.grey),
+          Padding(
+              padding: EdgeInsets.only(bottom: 5),
+              child: Center(child: Text("เพิ่มชึ้น v")))
+        ],
+      ),
+    );

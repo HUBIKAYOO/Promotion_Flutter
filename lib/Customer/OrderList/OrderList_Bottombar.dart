@@ -8,283 +8,333 @@ import 'package:upro/SignIn/Login/UserID.dart';
 import 'package:http/http.dart' as http;
 
 class OrderList_Bottombar extends StatelessWidget {
-  final Map<String, dynamic> data;
-  final double? sumOder;
+  final Map<int, List<dynamic>> data;
   final String? purchaseorderId;
+  Map<int, int> sumOder;
+  String? selectedMenuDetailName;
+  bool? Basket;
+  final Map<int, TextEditingController> nameControllers; // เพิ่ม parameter นี้
+  final ValueNotifier<bool> isProcessing =
+      ValueNotifier(false); // สร้าง ValueNotifier สำหรับสถานะ
 
-  OrderList_Bottombar(
-      {required this.data,
-      required this.sumOder,
-      required this.purchaseorderId});
+  OrderList_Bottombar({
+    required this.data,
+    required this.sumOder,
+    required this.purchaseorderId,
+    this.selectedMenuDetailName,
+    this.Basket,
+    required this.nameControllers,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 60,
-      color: Colors.blueAccent,
-      child: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "ยอดที่ต้องชำระ ฿${sumOder != null ? sumOder!.toStringAsFixed(2) : data['price']}",
-                style: TextStyle(fontSize: 16.0, color: Colors.white),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: InkWell(
-              onTap: () {
-                _insert(context); // ส่ง context ไปยัง _insert()
-              },
-              child: Container(
-                alignment: Alignment.center,
-                color: Colors.amber,
-                child: Text(
-                  "ซื้อ",
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.blue,
+    int totalSum = sumOder.values.reduce((a, b) => a + b);
+
+    return ValueListenableBuilder<bool>(
+      valueListenable: isProcessing, // เชื่อมโยงกับ ValueNotifier
+      builder: (context, processing, child) {
+        return Container(
+          height: 60,
+          color: Colors.white,
+          child: Row(
+            children: [
+              Expanded(
+                flex: 3,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "ยอดที่ต้องชำระทั้งหมด ",
+                        style: TextStyle(fontSize: 17, color: Colors.black),
+                      ),
+                      Text(
+                        "฿$totalSum",
+                        style: TextStyle(fontSize: 20, color: Colors.orange),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
+              Expanded(
+                flex: 1,
+                child: InkWell(
+                  onTap: processing // ปิดการกดปุ่มถ้ากำลังทำงาน
+                      ? null
+                      : () async {
+                          isProcessing.value =
+                              true; // ตั้งสถานะเป็นกำลังประมวลผล
+                          await _insert(
+                              context, data); // เรียกใช้ฟังก์ชัน insert
+                          isProcessing.value =
+                              false; // ตั้งสถานะกลับเป็นไม่ประมวลผล
+                        },
+                  child: Container(
+                    alignment: Alignment.center,
+                    color: processing
+                        ? Colors.grey
+                        : Colors.orange, // เปลี่ยนสีปุ่ม
+                    child: Text(
+                      "ซื้อ",
+                      style: TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  void _insert(BuildContext context) async {
-    String url2 = "http://$IP/oder_register";
+  Future<void> _insert(BuildContext context, data) async {
     final userId = Provider.of<UserIdProvider>(context, listen: false).userId;
-    String currentDate =
-        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-    if (sumOder == null) {
-      Map<String, dynamic> puchaseoder = {
-        'user_id': userId,
-        'storeId': data['storeId'].toString(),
-        'puchaseoder_date': currentDate,
-        'puoder_status_id': '1',
-        'puchaseoder_ttprice': '50.30',
-        'compostore_id': '0',
-      };
-      String url = "http://$IP/puchaseoder_register";
-      final response = await http.post(Uri.parse(url), body: puchaseoder);
-      if (response.statusCode == 201) {
-        var jsonResponse = jsonDecode(response.body);
-        var _puchaseoderId = jsonResponse['puchaseoderId'];
-        print('รหัสใบสั่งซื้อ: $_puchaseoderId');
+    String currentDay = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    String currentTime = DateFormat('HH:mm:ss').format(DateTime.now());
 
-        Map<String, dynamic> Oder = {
-          'set_promotion_id': data['set_promotion_id'].toString(),
-          'totalprice': '50.30',
-          'puchaseoder_id': _puchaseoderId.toString(),
-          'order_status_id': '1',
-          'oder_amount': data['amountcon'].toString(),
-          'price': data['price'].toString(),
-          'price_setpro': '60',
-          'menu_data_id': '1',
-          'purchasetype_id': '2',
-          'order_detail': '',
-        };
+    for (var entry in data.entries) {
+      print("sumOder : $sumOder");
+      int storeId = entry.key;
+      List<dynamic> listoder = entry.value;
 
-        final response2 = await http.post(Uri.parse(url2), body: Oder);
-        if (response2.statusCode == 201) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MyMenu(
-                menu: 1,
-              ),
-            ),
-            (Route<dynamic> route) => false,
-          );
+      final checkpuchaseoder = await http
+          .get(Uri.parse('http://$IP/puchaseoder/check/$userId/$storeId'));
+      if (checkpuchaseoder.statusCode == 200) {
+        int purchaseorderId = json.decode(checkpuchaseoder.body);
+
+        // ไม่มี puchaseoder
+        if (purchaseorderId == 0) {
+          await _insertNoPuchaser(userId, storeId, currentDay, sumOder[storeId],
+              currentTime, nameControllers[storeId], listoder);
+        }
+        // มี puchaseoder ที่ยังไม่จ่าย
+        else {
+          await _insertHavePuchaser(sumOder[storeId], currentTime,
+              nameControllers[storeId], purchaseorderId, listoder);
         }
       }
-    } else {
-      Map<String, dynamic>? puchaseoder = {
-        'user_id': null,
-        'storeId': null,
-        'puchaseoder_date': null,
-        'puoder_status_id': null,
-        'puchaseoder_ttprice': sumOder.toString(),
-        'compostore_id': null,
-      };
-      String url = "http://$IP/edit_puchaseoder/$purchaseorderId";
-      final response = await http.put(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(puchaseoder),
-      );
-      if (response.statusCode == 200) {
+      
+    }
+    // หลังจากทำงานเสร็จจะกลับไปที่หน้าหลัก
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyMenu(
+          menu: 1,
+        ),
+      ),
+      (Route<dynamic> route) => false,
+    );
+    // Navigator.pushAndRemoveUntil(
+    // context,
+    // MaterialPageRoute(
+    //   builder: (context) => MyMenu(
+    //     menu: 1,
+    //   ),
+  //   ),
+  //   (Route<dynamic> route) => false,
+  // ).then((_) {
+  //   // แสดง popup QRCodeDialog หลังจากกลับไปที่หน้าหลัก
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return QRCodeDialog(
+  //         amount: widget.amount,
+  //         puchaseoder_id: widget.puchaseoder_id.toString(),
+  //         onStatusUpdated: (Image) {
+  //           setState(() {
+  //             _fetchedImage = Image;
+  //           });
+  //         },
+  //       );
+  //     },
+  //   );
+  // });
+  }
+
+  Future<void> _insertNoPuchaser(userId, storeId, currentDay, sumOderStoreId,
+      currentTime, detail, listoder) async {
+    Map<String, dynamic> puchaseoder = {
+      'user_id': userId.toString(),
+      'storeId': storeId.toString(),
+      'puchaseoder_date': currentDay,
+      'puoder_status_id': '1',
+      'puchaseoder_ttprice': sumOderStoreId.toString(),
+      'compostore_id': '0',
+      'time': currentTime,
+      'pco_detail': detail?.text,
+    };
+    print("puchaseoder : $puchaseoder");
+
+    String url = "http://$IP/puchaseoder_register";
+    final insertpuchaseoder =
+        await http.post(Uri.parse(url), body: puchaseoder);
+    if (insertpuchaseoder.statusCode == 201) {
+      var jsonpuchaseoder = jsonDecode(insertpuchaseoder.body);
+      var _puchaseoderId = jsonpuchaseoder['puchaseoderId'];
+      print('_puchaseoderId : $_puchaseoderId');
+
+      for (var item in listoder) {
+        int? MemuDataId;
+        if (!item.containsKey('menu_data_id')) {
+          String url = "http://$IP/menu_data_register";
+          final insertMemuData = await http.post(Uri.parse(url),
+              headers: {'Content-Type': 'application/json'},
+              body: json.encode({
+                'menu_detail_data':
+                    item['menu_detail_data'].toString() // ส่งข้อมูลเป็น JSON
+              }));
+
+          if (insertMemuData.statusCode == 201) {
+            Map<String, dynamic> responseData =
+                json.decode(insertMemuData.body);
+            MemuDataId = responseData['menuDataId'];
+          }
+        }
+        print("repeated : ${item['repeated']}");
+
         Map<String, dynamic> Oder = {
-          'set_promotion_id': data['set_promotion_id'].toString(),
-          'totalprice': '50.30',
-          'puchaseoder_id': purchaseorderId,
+          'set_promotion_id': item['set_promotion_id'].toString(),
+          'totalprice': (item['price'] * item['repeated']).toString(),
+          'puchaseoder_id': _puchaseoderId.toString(),
           'order_status_id': '1',
-          'oder_amount': data['amountcon'].toString(),
-          'price': data['price'].toString(),
+          'oder_amount': item['amountcon'].toString(),
+          'price': item['price'].toString(), // แปลงเป็น String
           'price_setpro': '60',
-          'menu_data_id': '1',
+          'menu_data_id': (MemuDataId ?? item['menu_data_id']).toString(),
           'purchasetype_id': '2',
           'order_detail': '',
+          'count': item['repeated'].toString()
         };
-        final response2 = await http.post(Uri.parse(url2), body: Oder);
-        if (response2.statusCode == 201) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MyMenu(
-                menu: 1,
-              ),
-            ),
-            (Route<dynamic> route) => false,
-          );
+        print("Oderxxx : $Oder");
+        String url2 = "http://$IP/oder_register";
+        final oder = await http.post(Uri.parse(url2), body: Oder);
+        if (oder.statusCode == 201) {
+          print("insertoser สำเร็จ");
+          //ตะกร้า
+      if (Basket == true) {
+        await _deleteBasketAndMenu(listoder);
+      }
+        }
+        else{
+          print("insertoser ไม่สำเร็จ");
+        }
+      }
+    }
+  }
+
+  Future<void> _insertHavePuchaser(
+      sumOderStoreId, currentTime, detail, purchaseorderId, listoder) async {
+    Map<String, dynamic>? puchaseoder = {
+      'user_id': null,
+      'storeId': null,
+      'puchaseoder_date': null,
+      'puoder_status_id': null,
+      'puchaseoder_ttprice': sumOderStoreId.toString(),
+      'compostore_id': null,
+      'time': currentTime,
+      'pco_detail': detail?.text,
+    };
+    print("puchaseoder else : $puchaseoder");
+    String url = "http://$IP/edit_puchaseoder/$purchaseorderId";
+    final Updatepuchaseoder = await http.put(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(puchaseoder),
+    );
+    if (Updatepuchaseoder.statusCode == 200) {
+      print('200');
+      for (var items in listoder) {
+        int? MemuDataId;
+        String url =
+            "http://$IP/check_menu_data"; // เรียกใช้ API เปรียบเทียบข้อมูล
+        final response = await http.post(
+          Uri.parse(url),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'menu_detail_data': items['menu_detail_data'].toString(),
+            'puchaseoder_id': purchaseorderId.toString(),
+            'set_promotion_id': items['set_promotion_id'].toString()
+          }),
+        );
+        if (response.statusCode == 200) {
+          Map<String, dynamic> responseData = json.decode(response.body);
+          MemuDataId = responseData['menuDataId'];
+          print('MemuDataId: ${MemuDataId.toString()}');
+        } else {
+          print('Error: ${response.statusCode}');
+
+          String url = "http://$IP/menu_data_register";
+          final insertMemuData = await http.post(Uri.parse(url),
+              headers: {'Content-Type': 'application/json'},
+              body: json.encode({
+                'menu_detail_data':
+                    items['menu_detail_data'].toString() // ส่งข้อมูลเป็น JSON
+              }));
+
+          if (insertMemuData.statusCode == 201) {
+            Map<String, dynamic> responseData =
+                json.decode(insertMemuData.body);
+            MemuDataId = responseData['menuDataId'];
+          }
+        }
+        print("repeated items : ${items['repeated']}");
+
+        Map<String, dynamic> Oder = {
+          'set_promotion_id': items['set_promotion_id'].toString(),
+          'totalprice': (items['price'] * items['repeated']).toString(),
+          'puchaseoder_id': purchaseorderId.toString(),
+          'order_status_id': '1',
+          'oder_amount': items['amountcon'].toString(),
+          'price': items['price'].toString(), // แปลงเป็น String
+          'price_setpro': '60',
+          'menu_data_id': MemuDataId.toString(),
+          'purchasetype_id': '2',
+          'order_detail': '',
+          'count': items['repeated'].toString()
+        };
+        print("oder : $Oder");
+        String url2 = "http://$IP/oder_register";
+        final oder = await http.post(Uri.parse(url2), body: Oder);
+        if (oder.statusCode == 201) {
+          print("insertoser สำเร็จ");
+          //ตะกร้า
+      if (Basket == true) {
+        await _deleteBasketAndMenu(listoder);
+      }
+        }else{
+          print("insertoser ไม่สำเร็จ");
+        }
+      }
+    }
+  }
+
+  Future<void> _deleteBasketAndMenu(List<dynamic> listoder) async {
+    // ลบข้อมูลใน basket
+    for (var items in listoder) {
+      final deleteBasket = await http.delete(
+        Uri.parse('http://$IP/delete_basket/${items['basket_id']}'),
+      );
+      if (deleteBasket.statusCode == 200) {
+        print("ลบBasketสำเร็จ");
+      }
+    }
+
+    // ลบข้อมูลเมนู
+    for (var itemss in listoder) {
+      if (itemss['menu_data_id'] != 1) {
+        final deletemenu = await http.delete(
+          Uri.parse('http://$IP/delete_menu_data/${itemss['menu_data_id']}'),
+        );
+        if (deletemenu.statusCode == 200) {
+          print("ลบMenuสำเร็จ");
         }
       }
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-//     
-
-//     
-
-
-//       
-
-//       print("${url2}xxx${data2}");
-
-//       if (response2.statusCode == 201) {
-//         var jsonResponse2 = jsonDecode(response2.body);
-//         var oderId = jsonResponse2['oderId'];
-//         print('รหัสใบสั่ง: $oderId');
-//         String url3 = "http://$IP/sum-prices/$puchaseoderId";
-//         final response3 = await http.post(Uri.parse(url3), body: data2);
-
-
-//       }
-//     }
-//     else {
-//       String url2 = "http://$IP/oder_register";
-//       var firstOrder = oderStatus1[0];
-//       var puchaseoderId = firstOrder['puchaseoder_id'].toString();
-//       Map<String, dynamic> data2 = {
-//         'set_promotion_id': this.widget.data['set_promotion_id'].toString(),
-//         'totalprice': '50.30',
-//         'puchaseoder_id': puchaseoderId,
-//         'order_status_id': '1',
-//         'oder_amount': this.widget.data['amountcon'].toString(),
-//         'price': this.widget.data['price'].toString(),
-//         'price_setpro': '60',
-//         'menu_data_id': '1',
-//         'purchasetype_id': '2',
-//         'order_detail': '',
-//       };
-//     }
-//     } else {
-//       print('การอัพโหลดข้อมูลและรูปภาพล้มเหลว รหัสสถานะ: ');
-//     }
- 
-// // }
-
-// // void _insert(BuildContext context) async {
-// //     String url = "http://$IP/puchaseoder_register";
-// //     final userId = Provider.of<UserIdProvider>(context, listen: false).userId;
-
-// //     // ใช้วันที่และเวลาปัจจุบัน
-// //     String currentDate =
-// //         DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-
-// //     Map<String, dynamic> data = {
-// //       'user_id': userId,
-// //       'storeId': this.widget.data['storeId'].toString(),
-//       'puchaseoder_date': currentDate, // ใช้วันที่และเวลาปัจจุบัน
-//       'puoder_status_id': '1',
-//       'puchaseoder_ttprice': '50.30',
-//       'compostore_id': '0',
-//     };
-
-//     final response = await http.post(Uri.parse(url), body: data);
-
-//     if (response.statusCode == 201) {
-//       var jsonResponse = jsonDecode(response.body);
-//       var puchaseoderId = jsonResponse['puchaseoderId'];
-//       print('รหัสใบสั่งซื้อ: $puchaseoderId');
-
-//       String url2 = "http://$IP/oder_register";
-//       Map<String, dynamic> data2 = {
-//         'set_promotion_id': this.widget.data['set_promotion_id'].toString(),
-//         'totalprice': '50.30',
-//         'puchaseoder_id': puchaseoderId.toString(),
-//         'order_status_id': '1',
-//         'oder_amount': this.widget.data['amountcon'].toString(),
-//         'price': this.widget.data['price'].toString(),
-//         'price_setpro': '60',
-//         'menu_data_id': '1',
-//         'purchasetype_id': '2',
-//         'order_detail': '',
-//       };
-
-//       final response2 = await http.post(Uri.parse(url2), body: data2);
-
-//       print("${url2}xxx${data2}");
-
-//       if (response2.statusCode == 201) {
-//         var jsonResponse2 = jsonDecode(response2.body);
-//         var oderId = jsonResponse2['oderId'];
-//         print('รหัสใบสั่ง: $oderId');
-//         String url3 = "http://$IP/sum-prices/$puchaseoderId";
-//         final response3 = await http.post(Uri.parse(url3), body: data2);
-
-//         Navigator.pushAndRemoveUntil(
-//           context,
-//           MaterialPageRoute(
-//             builder: (context) => MyMenu(
-//               menu: 1,
-//             ),
-//           ),
-//           (Route<dynamic> route) => false,
-//         );
-//       }
-//     }
-//     //else {
-//     //   String url2 = "http://$IP/oder_register";
-//     //   var firstOrder = oderStatus1[0];
-//     //   var puchaseoderId = firstOrder['puchaseoder_id'].toString();
-//     //   Map<String, dynamic> data2 = {
-//     //     'set_promotion_id': this.widget.data['set_promotion_id'].toString(),
-//     //     'totalprice': '50.30',
-//     //     'puchaseoder_id': puchaseoderId,
-//     //     'order_status_id': '1',
-//     //     'oder_amount': this.widget.data['amountcon'].toString(),
-//     //     'price': this.widget.data['price'].toString(),
-//     //     'price_setpro': '60',
-//     //     'menu_data_id': '1',
-//     //     'purchasetype_id': '2',
-//     //     'order_detail': '',
-//     //   };
-//     // }
-//     // } else {
-//     //   print('การอัพโหลดข้อมูลและรูปภาพล้มเหลว รหัสสถานะ: ');
-//     // }
-//   }

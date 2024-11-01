@@ -38,15 +38,15 @@ class MyApp extends StatelessWidget {
           bodyMedium: TextStyle(color: Colors.black, fontFamily: 'Sarabun'),
         ),
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.orange,
-        scaffoldBackgroundColor: Colors.black,
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: Colors.white, fontFamily: 'Sarabun'),
-          bodyMedium: TextStyle(color: Colors.white, fontFamily: 'Sarabun'),
-        ),
-      ),
+      // darkTheme: ThemeData(
+      //   brightness: Brightness.dark,
+      //   primaryColor: Colors.orange,
+      //   scaffoldBackgroundColor: Colors.black,
+      //   textTheme: const TextTheme(
+      //     bodyLarge: TextStyle(color: Colors.white, fontFamily: 'Sarabun'),
+      //     bodyMedium: TextStyle(color: Colors.white, fontFamily: 'Sarabun'),
+      //   ),
+      // ),
       home: Permissions(), // หน้าหลักเริ่มต้นของแอป
       routes: {
         '/login': (context) => Login(),

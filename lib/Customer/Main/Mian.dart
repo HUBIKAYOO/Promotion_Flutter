@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:upro/Customer/Bsket/Basket.dart';
 import 'package:upro/Customer/main/main_advert.dart';
 import 'package:upro/Customer/main/main_promotion.dart';
 import 'package:upro/Customer/main/main_producttype.dart';
@@ -20,7 +21,8 @@ class _MainState extends State<Main> {
           actions: [
             IconButton(
               icon: Icon(Icons.shopping_cart_outlined),
-              onPressed: () {},
+              onPressed: () => Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Basket())),
               padding: EdgeInsets.symmetric(horizontal: 8.0),
             ),
           ]),
@@ -31,7 +33,7 @@ class _MainState extends State<Main> {
             child: Column(
               children: [
                 Main_Advert(),
-                Main_Producttype(),
+                // Main_Producttype(),
                 Main_Promostion(),
               ],
             ),
@@ -46,7 +48,7 @@ _buildtitile() => Container(
       width: double.infinity,
       padding: EdgeInsets.all(5),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8 ),
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.orange, width: 2)),
       child: Row(
         children: [
@@ -67,7 +69,10 @@ _buildtitile() => Container(
             child: Center(
               child: Text(
                 "ค้นหา",
-                style: TextStyle(fontSize: 13, color: Colors.white,fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
               ),
             ),
           )

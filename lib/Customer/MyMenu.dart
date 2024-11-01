@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:upro/Customer/Main/Mian.dart';
+import 'package:upro/Customer/N%E0%B9%8Cotification/Ntification.dart';
 import 'package:upro/Customer/PurchaseOrder/PurchaseOrder.dart';
 import 'package:upro/Customer/profile/profile.dart';
 
@@ -31,6 +32,7 @@ class _MyMenuState extends State<MyMenu> {
   final List<Widget> _widgetOptions = [
     Main(),
     PurchaseOrder(),
+    Ntification(), // เพิ่มหน้าแจ้งเตือน
     Profile(),
   ];
 
@@ -47,25 +49,37 @@ class _MyMenuState extends State<MyMenu> {
         children: _widgetOptions,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
+        type: BottomNavigationBarType.fixed, // ป้องกันการขยายตัวของไอคอน
+        items: [
           BottomNavigationBarItem(
             label: "หน้าหลัก",
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined), // ไอคอนเมื่อไม่ถูกเลือก
+            activeIcon: Icon(Icons.home), // ไอคอนเมื่อถูกเลือก
           ),
           BottomNavigationBarItem(
             label: "ใบสั่งซื้อ",
-            icon: Icon(Icons.subtitles),
+            icon: Icon(Icons.subtitles_outlined),
+            activeIcon: Icon(Icons.subtitles),
+          ),
+          BottomNavigationBarItem(
+            label: "แจ้งเตือน",
+            icon: Icon(Icons.notifications_none), // ไอคอนเมื่อไม่ถูกเลือก
+            activeIcon: Icon(Icons.notifications), // ไอคอนเมื่อถูกเลือก
           ),
           BottomNavigationBarItem(
             label: "โปรไฟล์",
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
           ),
         ],
         currentIndex: _currentIndex,
         selectedFontSize: 14.0,
         unselectedFontSize: 14.0,
         selectedIconTheme: IconThemeData(size: 24.0),
+        unselectedIconTheme: IconThemeData(size: 24.0),
         selectedItemColor: Colors.orange,
+        unselectedItemColor: Color(0xFF5B5A5A), // กำหนดสีของไอคอนที่ไม่ถูกเลือก
+        showUnselectedLabels: true, // แสดงป้ายข้อความของไอเท็มที่ไม่ถูกเลือก
         onTap: (int newIndex) {
           setState(() {
             _currentIndex = newIndex;

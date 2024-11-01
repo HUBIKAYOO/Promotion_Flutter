@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:carousel_slider/carousel_controller.dart';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:upro/IP.dart';
@@ -15,7 +15,6 @@ class Promostion_Image extends StatefulWidget {
 
 class _Promostion_ImageState extends State<Promostion_Image> {
   late Map<String, dynamic> _data;
-  final CarouselController _carouselController = CarouselController();
   int _currentIndex = 0;
 
   @override
@@ -35,16 +34,15 @@ class _Promostion_ImageState extends State<Promostion_Image> {
 
     return Container(
       padding: EdgeInsets.only(bottom: 10),
-      color: Colors.transparent,
+      color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Stack(
             children: [
               CarouselSlider(
-                carouselController: _carouselController,
                 options: CarouselOptions(
-                  height:  MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width,
                   enlargeCenterPage: false, // ปิดการขยายภาพตอนอยู่กลางหน้า
                   enlargeStrategy: CenterPageEnlargeStrategy
                       .height, // ใช้ strategy นี้เพื่อให้รูปไม่เล็กลง
@@ -69,7 +67,9 @@ class _Promostion_ImageState extends State<Promostion_Image> {
                 right: 10,
                 bottom: 10,
                 child: Container(
-                  decoration: BoxDecoration(color: Colors.black54,borderRadius: BorderRadius.circular(15)),
+                  decoration: BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.circular(15)),
                   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: Text(
                     '${_currentIndex + 1} / ${images.length}',
@@ -85,30 +85,41 @@ class _Promostion_ImageState extends State<Promostion_Image> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '฿${_data['price']}',
-                style: TextStyle(fontSize: 30, color: Colors.orange),
-              ),
-              SizedBox(width: 20),
-              Text(
-                '฿${_data['price']}',
-                style: TextStyle(
-                    fontSize: 15,
-                    decoration: TextDecoration.lineThrough,
-                    decorationThickness: 2),
-              ),
-            ],
-          ),
-          Text(
-            _data['name'],
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-          ),
-          Text(
-            _data['product_type_name'],
-            style: TextStyle(fontWeight: FontWeight.normal),
-          ),
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          '฿${_data['price']}',
+                          style: TextStyle(fontSize: 30, color: Colors.orange),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          '฿${_data['oprice']}',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.grey, // สีของข้อความ
+                            decoration:
+                                TextDecoration.lineThrough, // ขีดกลางข้อความ
+                            decorationColor: Colors.grey, // สีของขีดกลาง
+                            decorationThickness: 1.5, // ความหนาของขีดกลาง
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: 20),
+                  ],
+                ),
+                Text(
+                  _data['name'],
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+                Text(
+                  _data['product_type_name'],
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                ),
               ],
             ),
           )

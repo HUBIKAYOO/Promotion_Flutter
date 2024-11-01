@@ -1,43 +1,51 @@
 import 'package:flutter/material.dart';
 
 class Orderlist_Payment extends StatelessWidget {
-    final Map<String, dynamic> data;
+  final int totalSum;
+  final int sumOder;
 
-  const Orderlist_Payment({Key? key, required this.data}) : super(key: key);
+  Orderlist_Payment({required this.totalSum, required this.sumOder});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.red,
+decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color: Colors.white),
       padding: EdgeInsets.all(10),
-      margin: EdgeInsets.only(top: 10,right: 10,left: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('ข้อมูลการชำระเงิน'),
+          Text('ข้อมูลการชำระเงิน',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          SizedBox(height: 10),
           Container(
-            padding: EdgeInsets.only(top: 10,left: 10),
-            color: Colors.blue,
+            padding: EdgeInsets.only( left: 10),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(children: [
-                  Text("ราคา"),
-                  Spacer(), 
-                  Text('฿${data["price"]}')
-                ],),
-                Row(children: [
-                  Text("ราคาจริง"),
-                  Spacer(), 
-                  Text('฿${data["price"]}')
-                ],),
-                Row(children: [
-                  Text("ราคาโปร"),
-                  Spacer(), 
-                  Text('฿${data["price"]}')
-                ],),
+                // Row(
+                //   children: [
+                //     Text("รายการทั้งหมด"),
+                //     Spacer(),
+                //     Text('฿$sumOder')
+                //   ],
+                // ),
+                Row(
+                  children: [
+                    Text("รายการรวม"),
+                    Spacer(),
+                    Text('x$totalSum')
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text("ยอดที่ต้องชำระเงินทั้งหมด", style: TextStyle(fontSize: 17)),
+                    Spacer(),
+                    Text('฿$sumOder', style: TextStyle(fontSize: 17,color: Colors.orange))
+                  ],
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

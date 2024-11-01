@@ -35,8 +35,10 @@ class _Promostion_MapState extends State<Promostion_Map> {
   void _launchMapsUrl(LatLng location) async {
     final url =
         'https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}';
-    if (await canLaunch(url)) {
-      await launch(url);
+
+    // ใช้ canLaunchUrl เพื่อตรวจสอบก่อนเปิด URL
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
       throw 'Could not launch $url';
     }
@@ -45,16 +47,13 @@ class _Promostion_MapState extends State<Promostion_Map> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
-      height: 120,
       width: double.infinity,
-      color: const Color.fromARGB(255, 21, 130, 144),
       child: Column(children: [
         Container(
           width: double.infinity,
           height: 100,
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(10),
           ),
           child: ClipRRect(

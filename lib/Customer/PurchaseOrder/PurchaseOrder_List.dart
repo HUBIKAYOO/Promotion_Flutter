@@ -2,15 +2,20 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:upro/Customer/OrderList/OrderList_Oder.dart';
 import 'package:upro/Customer/PurchaseOrder/PurchaseOrder_List_Store.dart';
 import 'package:upro/Customer/PurchaseOrder/PurchaseOrder_List_Totol.dart';
-import 'package:upro/Customer/PurchaseOrder/PurchaseOrder_List_Oder.dart';
 import 'package:upro/IP.dart';
 import 'package:upro/SignIn/Login/UserID.dart';
 
 class PurchaseOrder_List extends StatefulWidget {
   final String POStatus;
-  PurchaseOrder_List({required this.POStatus});
+  final Function(String)? onStatusUpdated; // เพิ่ม callback function
+
+  PurchaseOrder_List({
+    required this.POStatus,
+    this.onStatusUpdated, // รับค่า callback
+  });
 
   @override
   State<PurchaseOrder_List> createState() => _PurchaseOrder_ListState();
@@ -73,8 +78,18 @@ class _PurchaseOrder_ListState extends State<PurchaseOrder_List> {
     }
   }
 
+  // ฟังก์ชันเรียกใช้งาน callback เมื่อมีการเปลี่ยนสถานะ
+  void _handleStatusChange(String newStatus) {
+    if (widget.onStatusUpdated != null) {
+      widget.onStatusUpdated!(newStatus);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("_purchaseOrders : $_purchaseOrders");
+    print("_orderDetailsMap : $_orderDetailsMap");
+
     return Container(
       margin: EdgeInsets.all(10),
       color: Color(0xFFEEEEEE),
@@ -86,26 +101,47 @@ class _PurchaseOrder_ListState extends State<PurchaseOrder_List> {
                     int.parse(purchase['puchaseoder_id'].toString());
                 List<dynamic> orderDetails =
                     _orderDetailsMap[puchaseoderId] ?? [];
-                print(orderDetails);
-                print('QQQQQQQQQQQQQQQQQQQQQQ');
+                int totalRepeated = 0;
+
+                for (var item in orderDetails) {
+                  if (item['repeated'] != null) {
+                    totalRepeated += int.parse(item['repeated'].toString());
+                  }
+                }
 
                 String puoderStatusId = purchase['puoder_status_id'].toString();
 
                 return Container(
                   padding: EdgeInsets.all(10),
                   margin: EdgeInsets.only(bottom: 10),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color: Colors.white,),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: const Color.fromRGBO(255, 255, 255, 1),
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       PurchaseOrder_List_Store(
-                        storeName: purchase['storeName'],orderDetails: orderDetails
-                      ),
+                        storesrId:purchase['storeId'],
+                        pco_detail:purchase['pco_detail'],
+                          storeName: purchase['storeName'],
+                          orderDetails: orderDetails,
+                          puchaseoder_ttprice: double.parse(
+                              purchase['puchaseoder_ttprice'].toString())),
                       SizedBox(height: 1),
                       Divider(color: Colors.grey),
-                      PurchaseOrder_List_Oder(orderDetails: orderDetails),
+                      ...orderDetails.map((item) {
+                        return Orderlist_Oder(item: item,puchaseoder_ttprice: double.parse(
+                              purchase['puchaseoder_ttprice'].toString()));
+                      }).toList(),
                       PurchaseOrder_List_Totol(
+                        totalRepeated: totalRepeated,
                         puoderStatusId: puoderStatusId,
+                        puchaseoder_id: purchase['puchaseoder_id'],
+                        amount: double.parse(
+                            purchase['puchaseoder_ttprice'].toString()),
+                        onStatusUpdated:
+                            _handleStatusChange, // เรียก callback เมื่อมีการเปลี่ยนสถานะ
                       ),
                     ],
                   ),
